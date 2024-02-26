@@ -1,18 +1,18 @@
 package org.example;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.hibernate.SessionFactory;
-import org.hibernate.Session;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public class HibernateExampleTest {
-    private SessionFactory sessionFactory;
+    private EntityManagerFactory sessionFactory;
 
     @BeforeEach
     protected void setUp() throws Exception {
@@ -39,21 +39,21 @@ public class HibernateExampleTest {
     @Test
     void save_user_to_database() {
         User user = new User("Nobody", LocalDate.now());
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
+        EntityManager entityManager = sessionFactory.createEntityManager();
+        entityManager.getTransaction().begin();
 
-        session.persist(user);
-        session.getTransaction().commit();
+        entityManager.persist(user);
+        entityManager.getTransaction().commit();
     }
 
     @Test
     void retrieve_users_from_database() {
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
+        EntityManager entityManager = sessionFactory.createEntityManager();
+        entityManager.getTransaction().begin();
 
-        List<User> users = session.createQuery("select u from User u", User.class).list();
+        List<User> users = entityManager.createQuery("select u from User u", User.class).getResultList();
         users.forEach(System.out::println);
 
-        session.getTransaction().commit();
+        entityManager.getTransaction().commit();
     }
 }
