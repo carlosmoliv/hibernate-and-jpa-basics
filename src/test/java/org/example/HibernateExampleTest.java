@@ -9,6 +9,7 @@ import org.hibernate.Session;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class HibernateExampleTest {
     private SessionFactory sessionFactory;
@@ -42,6 +43,17 @@ public class HibernateExampleTest {
         session.beginTransaction();
 
         session.persist(user);
+        session.getTransaction().commit();
+    }
+
+    @Test
+    void retrieve_users_from_database() {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        List<User> users = session.createQuery("select u from User u", User.class).list();
+        users.forEach(System.out::println);
+
         session.getTransaction().commit();
     }
 }
